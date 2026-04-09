@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+
 import { createAccount } from "@/actions/dashboard";
 import { accountSchema } from "@/app/lib/schema";
 
@@ -74,8 +75,10 @@ export function CreateAccountDrawer({ children }) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
+      
+      {/* ✅ IMPORTANT FIX: NO EXTRA BUTTON */}
       <DialogTrigger asChild>
-        <button type="button">{children}</button>
+        {children}
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-md">
@@ -84,16 +87,21 @@ export function CreateAccountDrawer({ children }) {
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          
-          {/* Name */}
+
+          {/* Account Name */}
           <div>
-            <Input placeholder="Account Name" {...register("name")} />
+            <Input
+              placeholder="Account Name"
+              {...register("name")}
+            />
             {errors.name && (
-              <p className="text-red-500 text-sm">{errors.name.message}</p>
+              <p className="text-red-500 text-sm">
+                {errors.name.message}
+              </p>
             )}
           </div>
 
-          {/* Type */}
+          {/* Account Type */}
           <Select
             onValueChange={(value) => setValue("type", value)}
             defaultValue={watch("type")}
@@ -114,19 +122,33 @@ export function CreateAccountDrawer({ children }) {
             {...register("balance")}
           />
 
-          {/* Default */}
+          {/* Default Switch */}
           <div className="flex justify-between items-center">
             <span>Set as Default</span>
             <Switch
               checked={watch("isDefault")}
-              onCheckedChange={(val) => setValue("isDefault", val)}
+              onCheckedChange={(val) =>
+                setValue("isDefault", val)
+              }
             />
           </div>
 
-          {/* Buttons */}
-          <Button type="submit" className="w-full">
-            {createAccountLoading ? "Creating..." : "Create Account"}
+          {/* Submit */}
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={createAccountLoading}
+          >
+            {createAccountLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Creating...
+              </>
+            ) : (
+              "Create Account"
+            )}
           </Button>
+
         </form>
       </DialogContent>
     </Dialog>
