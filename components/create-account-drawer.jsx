@@ -77,8 +77,9 @@ export function CreateAccountDrawer({ children }) {
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>{children}</DrawerTrigger>
 
-      {/* 🔥 FIX APPLIED HERE */}
+      {/* 🔥 FINAL FIX */}
       <DrawerContent
+        onOpenAutoFocus={(e) => e.preventDefault()}
         onInteractOutside={(e) => e.preventDefault()}
         onPointerDownOutside={(e) => e.preventDefault()}
       >
@@ -96,7 +97,6 @@ export function CreateAccountDrawer({ children }) {
               </label>
               <Input
                 placeholder="e.g., Main Checking"
-                autoFocus
                 {...register("name")}
               />
               {errors.name && (
