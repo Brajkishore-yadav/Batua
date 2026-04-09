@@ -58,6 +58,7 @@ export function CreateAccountDrawer({ children }) {
     await createAccountFn(data);
   };
 
+  // ✅ SUCCESS → close dialog
   useEffect(() => {
     if (newAccount) {
       toast.success("Account created successfully");
@@ -66,6 +67,7 @@ export function CreateAccountDrawer({ children }) {
     }
   }, [newAccount, reset]);
 
+  // ❌ ERROR → don't close
   useEffect(() => {
     if (error) {
       toast.error(error.message || "Failed to create account");
@@ -78,18 +80,30 @@ export function CreateAccountDrawer({ children }) {
 
       <DialogContent
         className="max-w-md"
+        onPointerDownOutside={(e) => e.preventDefault()}
         onInteractOutside={(e) => e.preventDefault()}
+        onEscapeKeyDown={(e) => e.preventDefault()}
       >
         <DialogHeader>
           <DialogTitle>Create New Account</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-4"
+        >
 
           {/* Name */}
           <div>
-            <Input placeholder="Account Name" {...register("name")} />
-            {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+            <Input
+              placeholder="Account Name"
+              {...register("name")}
+            />
+            {errors.name && (
+              <p className="text-red-500 text-sm">
+                {errors.name.message}
+              </p>
+            )}
           </div>
 
           {/* Type */}
@@ -107,20 +121,36 @@ export function CreateAccountDrawer({ children }) {
           </Select>
 
           {/* Balance */}
-          <Input type="number" placeholder="Balance" {...register("balance")} />
+          <Input
+            type="number"
+            placeholder="Balance"
+            {...register("balance")}
+          />
 
           {/* Switch */}
           <div className="flex justify-between items-center">
             <span>Set as Default</span>
             <Switch
               checked={watch("isDefault")}
-              onCheckedChange={(val) => setValue("isDefault", val)}
+              onCheckedChange={(val) =>
+                setValue("isDefault", val)
+              }
             />
           </div>
 
           {/* Buttons */}
-          <Button type="submit" disabled={createAccountLoading}>
-            {createAccountLoading ? "Creating..." : "Create"}
+          <Button
+            type="submit"
+            disabled={createAccountLoading}
+          >
+            {createAccountLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Creating...
+              </>
+            ) : (
+              "Create Account"
+            )}
           </Button>
 
         </form>
